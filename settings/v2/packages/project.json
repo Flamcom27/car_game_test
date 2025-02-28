@@ -1,0 +1,45 @@
+{
+  "__version__": "1.0.6",
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "objects"
+      },
+      {
+        "index": 2,
+        "name": "floor"
+      },
+      {
+        "index": 3,
+        "name": "coins"
+      },
+      {
+        "index": 4,
+        "name": "logs"
+      },
+      {
+        "index": 5,
+        "name": "checkBox"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 16,
+      "1": 30,
+      "2": 10,
+      "3": 6,
+      "4": 3
+    }
+  },
+  "general": {
+    "designResolution": {
+      "fitWidth": false,
+      "fitHeight": true,
+      "width": 393,
+      "height": 852
+    },
+    "highQuality": false
+  },
+  "custom_joint_texture_layouts": [],
+  "layer": []
+}
