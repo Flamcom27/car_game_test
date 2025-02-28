@@ -9,14 +9,7 @@ const { ccclass, property } = _decorator;
 @ccclass('InterfaceManager')
 export class InterfaceManager extends Component {
 
-    @property(Sprite)
-    hand: Sprite | null = null;
 
-    @property(Button)
-    button: Button | null = null;
-
-    @property(Slider)
-    slider: Slider | null = null;
 
     @property(Node)
     checkBoxes: Node | null = null;
@@ -24,21 +17,40 @@ export class InterfaceManager extends Component {
     @property(Node)
     endGameDisplay: Node | null = null;
 
+    @property(Node)
+    startGameDisplay: Node | null = null;
 
-    private _handTween: Tween | null = null;
+    @property(Node)
+    inGameDisplay: Node | null = null;
 
+    private _handTween: Tween;
+    private _hand: Node;
+    private _slider: Node;
+    private _downloadButton: Node;
+    private _startButton: Node;
 
     start() {
+        this._hand = this.inGameDisplay.getChildByName("Hand");
+        this._slider = this.inGameDisplay.getChildByName("Slider")
+        this._downloadButton = this.inGameDisplay.getChildByName("Slider")
+        this._startButton = this.startGameDisplay.getChildByName("StartButton")
+
         this._setHandTween();
         this._setEndButtonTween();
-        let handle: Node = this.slider.node.getChildByName("Handle")
-        this.button.node.on(Button.EventType.CLICK, this.redirectToStore, this);
 
-        this.slider.node.once("slide", () => {
+        this.inGameDisplay.active = false;
+
+        this._downloadButton.on(Button.EventType.CLICK, this.redirectToStore, this);
+        this.endGameDisplay.on(Button.EventType.CLICK, this.redirectToStore, this);
+        this._slider.once("slide", () => {
             if (this._handTween) {
-                this.hand.destroy()
+                this._hand.destroy()
                 this._handTween.destroySelf()
             }
+        }, this);
+        this._startButton.on(Button.EventType.CLICK, () => {
+            this.startGameDisplay.active = false;
+            this.inGameDisplay.active = true;
         }, this);
 
         this.checkBoxes.getComponentsInChildren(Collider).forEach(
@@ -60,17 +72,10 @@ export class InterfaceManager extends Component {
 
     showEndDisplay(event: ITriggerEvent) {
         if (event.otherCollider.node.name === "Machine") {
-            this.node.children.forEach((child: Node) => {
-                const sprite: Sprite = child.getComponent(Sprite);
-                if (sprite) {
-                    sprite.color = color(0, 0, 0, 0)
-                }
-            }
-            );
+            this.inGameDisplay.active = false
 
             setTimeout(() => {
                 this.endGameDisplay.active = true;
-                document.body.addEventListener("click", this.redirectToStore)
             }, 3500);
         }
     }
@@ -90,9 +95,9 @@ export class InterfaceManager extends Component {
     }
 
     _setHandTween() {
-        let position: Vec3 = this.hand.node.getPosition();
-        let destPoint: number = this.slider.getComponent(UITransform).contentSize.y;
-        this._handTween =  tween(this.hand.node)
+        let position: Vec3 = this._hand.getPosition();
+        let destPoint: number = this._slider.getComponent(UITransform).contentSize.y;
+        this._handTween =  tween(this._hand)
             .by(2, { position: new Vec3(0, destPoint, 0) }, { easing: "quadOut"})
             .to(0.1, {})
             .hide()
