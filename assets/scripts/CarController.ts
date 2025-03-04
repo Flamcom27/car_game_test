@@ -2,6 +2,7 @@ import {
     _decorator, Component, Node, ITriggerEvent, ERigidBodyType,
     Slider, ConstantForce, Vec3, Quat, Collider, RigidBody, Animation
 } from 'cc';
+import platform from 'platform';
 
 const { ccclass, property } = _decorator;
 
@@ -41,17 +42,18 @@ export class CarController extends Component {
         this._wheels = [
             this.wheel1, this.wheel2, this.wheel3, this.wheel4
         ];
-        let colliders: Collider[] = this.node.getComponents(Collider);
-        colliders = colliders.concat( this.getComponentsInChildren(Collider) )
-        colliders.forEach( (collider) => {
-            collider.on("onCollisionEnter", (event: ITriggerEvent) => {
-                const body: RigidBody = event.otherCollider.getComponent(RigidBody)
+        //let colliders: Collider[] = this.node.getComponents(Collider);
+        //colliders = colliders.concat( this.getComponentsInChildren(Collider) )
+        //colliders.forEach( (collider) => {
+        //    collider.on("onCollisionEnter", (event: ITriggerEvent) => {
+        //        const body: RigidBody = event.otherCollider.getComponent(RigidBody)
 
-                if (body.getGroup() === 16) {
-                    body.type = ERigidBodyType.DYNAMIC
-                }
-            }, this)
-        })
+        //        if (body.getGroup() === 16) {
+        //            body.type = ERigidBodyType.DYNAMIC
+        //        }
+        //    }, this)
+        //})
+        
         this.checkBox1.getComponent(Collider).once("onTriggerEnter", (event: ITriggerEvent) => {
             this.destroyingAnimation.play("DestroyingAnimation");
             this.destroyCar(event)
@@ -76,8 +78,8 @@ export class CarController extends Component {
             });
         }
     }
-    updateForce(deltaTime: number){
-        this._force.force.x += 100 * (this.slider.progress * 2 - 1) * deltaTime - 30 * deltaTime;
+    updateForce(deltaTime: number) {
+        this._force.force.x += ( 200 * ( this.slider.progress * 2 - 1 ) - 5 ) * deltaTime;
 
         if (this._force.force.x > this.maxForce) {
             this._force.force.x = this.maxForce;
@@ -97,7 +99,6 @@ export class CarController extends Component {
                 let childCollider: Collider = childNode.getComponent(Collider);
 
                 if (childCollider) {
-                    console.log(childNode.name)
                     childCollider.enabled = true;
                 }
             });

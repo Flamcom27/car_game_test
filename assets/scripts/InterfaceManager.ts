@@ -11,8 +11,12 @@ export class InterfaceManager extends Component {
 
 
 
+    //@property(Node)
+    //checkBoxes: Node | null = null;
     @property(Node)
-    checkBoxes: Node | null = null;
+    checkBox1: Node | null = null;
+    @property(Node)
+    checkBox2: Node | null = null;
 
     @property(Node)
     endGameDisplay: Node | null = null;
@@ -30,13 +34,14 @@ export class InterfaceManager extends Component {
     private _startButton: Node;
 
     start() {
-        this._hand = this.inGameDisplay.getChildByName("Hand");
-        this._slider = this.inGameDisplay.getChildByName("Slider")
-        this._downloadButton = this.inGameDisplay.getChildByName("Slider")
+        this._slider = this.inGameDisplay.getChildByName("Slider");
+        this._hand = this._slider.getChildByName("Hand");
+        this._downloadButton = this.inGameDisplay.getChildByName("ButtonDownload")
         this._startButton = this.startGameDisplay.getChildByName("StartButton")
 
-        this._setHandTween();
+
         this._setEndButtonTween();
+        this._setHandTween();
 
         this.inGameDisplay.active = false;
 
@@ -53,8 +58,8 @@ export class InterfaceManager extends Component {
             this.inGameDisplay.active = true;
         }, this);
 
-        this.checkBoxes.getComponentsInChildren(Collider).forEach(
-            (collider: Collider) => {
+        [this.checkBox1.getComponent(Collider), this.checkBox2.getComponent(Collider)]
+            .forEach((collider: Collider) => {
                 collider.on("onTriggerEnter", this.showEndDisplay, this);
             }
         );
@@ -96,7 +101,9 @@ export class InterfaceManager extends Component {
 
     _setHandTween() {
         let position: Vec3 = this._hand.getPosition();
-        let destPoint: number = this._slider.getComponent(UITransform).contentSize.y;
+
+        let destPoint: number = this._slider.getComponent(UITransform).contentSize.y
+
         this._handTween =  tween(this._hand)
             .by(2, { position: new Vec3(0, destPoint, 0) }, { easing: "quadOut"})
             .to(0.1, {})
